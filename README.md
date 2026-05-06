@@ -8,9 +8,9 @@ Military installations like Fort Hood (Fort Cavazos) face a growing challenge: a
 
 ## The Solution
 
-DS4D is a full-stack OSINT monitoring prototype that pulls real public Reddit posts related to Fort Hood, scores each one for force-protection risk using Google Gemini AI, and surfaces the results in a clean analyst dashboard — with a dedicated view for garrison commanders showing only elevated and critical threats.
+A full-stack OSINT monitoring prototype built as part of the **DS4D (Designing Solutions for Defense) — Army-615** course. It pulls real public Reddit posts related to Fort Hood, scores each one for force-protection risk using Google Gemini AI, and surfaces the results in a clean analyst dashboard — with a dedicated view for garrison commanders showing only elevated and critical threats.
 
-**Why Reddit?** Reddit is one of the most active platforms where soldiers, veterans, contractors, and locals openly discuss installation-related topics. It is publicly accessible, structured (subreddits, post metadata, engagement scores), and provides a real-time feed via its free API. Reddit is the **first step toward scaling** — the same pipeline (fetch → enrich → score → display) can be extended to X/Twitter, Telegram, Facebook groups, and other open sources with minimal changes.
+**Why Reddit?** Reddit is a widely used public platform where people openly discuss a broad range of topics — including military life, local community observations, and installation-related experiences. It is publicly accessible, structured (subreddits, post metadata, engagement scores), and provides a real-time feed via its free API. Reddit is the **first step toward scaling** — the same pipeline (fetch → enrich → score → display) can be extended to X/Twitter, Telegram, Facebook groups, and other open sources with minimal changes.
 
 ## Team
 
