@@ -1,48 +1,62 @@
-# Designing Solutions for Defense (DS4D)
+# DS4D — Open-Source Threat Pattern Detection for Force Protection
 
-## Topic: Open-Source Threat Pattern Detection for Force Protection (Army-615)
+**Army-615 · Designing Solutions for Defense**
 
-### OSINT Threat Monitor (prototype)
+## The Problem
 
-Full-stack **Next.js 14** app: dark “analyst console” UI, seeded Reddit-style corpus (replace with Reddit API later), contextual risk scoring **0–10** with four tiers (low / moderate / elevated / critical), **Google Gemini** analysis for euphemistic and coded language, and a **garrison commander** view that only surfaces elevated + critical threads with summary and threat rationale.
+Military installations like Fort Hood (Fort Cavazos) face a growing challenge: adversaries, bad actors, and OPSEC violators increasingly use public social media to share sensitive information — unit movements, gate routines, personnel details, and even coded coordination language. No automated tool exists to monitor this at scale for installation force protection teams.
 
-#### Quick start
+## The Solution
+
+DS4D is a full-stack OSINT monitoring prototype that pulls real public Reddit posts related to Fort Hood, scores each one for force-protection risk using Google Gemini AI, and surfaces the results in a clean analyst dashboard — with a dedicated view for garrison commanders showing only elevated and critical threats.
+
+**Why Reddit?** Reddit is one of the most active platforms where soldiers, veterans, contractors, and locals openly discuss installation-related topics. It is publicly accessible, structured (subreddits, post metadata, engagement scores), and provides a real-time feed via its free API. Reddit is the **first step toward scaling** — the same pipeline (fetch → enrich → score → display) can be extended to X/Twitter, Telegram, Facebook groups, and other open sources with minimal changes.
+
+## Team
+
+**Pappu Jha · Hope Houston · Kaiyah Patterson · Kevon Scales**
+
+## How to Run (for novice users)
+
+**You need:** Node.js installed, a free Google Gemini API key ([get one here](https://aistudio.google.com/app/apikey))
 
 ```bash
+# 1. Install dependencies
 npm install
-cp .env.example .env.local  
+
+# 2. Add your Gemini API key to the .env file
+#    Open .env and set: GEMINI_API_KEY=your_key_here
+
+# 3. Start the app
 npm run dev
 ```
 
-Open `http://localhost:3000`.
+Open your browser to `http://localhost:3000` (or `3001` if 3000 is in use).
 
-| Route | Purpose |
-|--------|--------|
+> First load takes 30–60 seconds — Gemini is analyzing all fetched posts. After that it's cached for 30 minutes.
+
+## Pages
+
+| Route | What you see |
+|---|---|
 | `/` | Mission brief + corpus snapshot |
-| `/analytics` | Volume / tier charts, subreddit & author breakdown, spike hint |
-| `/intelligence` | All threads, filters, expandable detail |
-| `/command` | Leadership: elevated & critical only |
-| `GET /api/corpus?granularity=day\|week\|month\|year` | JSON for charts + enriched posts |
+| `/analytics` | Volume charts, tier breakdown, subreddit breakdown |
+| `/intelligence` | All Reddit threads with risk scores + Gemini analysis |
+| `/command` | Garrison commander view — elevated & critical only |
 
-#### Risk engine
+## How It Works
 
-- If **`GEMINI_API_KEY`** is set (e.g. in `.env` or `.env.local`), **every post** is scored and written up **only by Gemini** — there is **no** heuristic fallback for those runs (API errors return `502` from `/api/corpus` so you know the model failed).
-- If the key is **unset**, the app uses the **contextual heuristic** in `lib/risk-engine.ts` only.
+1. App fetches ~50 real Reddit posts mentioning Fort Hood from `r/army`, `r/military`, `r/FortHood`, `r/Killeen`, and related subreddits
+2. Each post is sent to Google Gemini with a force-protection OSINT prompt
+3. Gemini returns a **risk score (0–10)**, tier, summary, threat rationale, and coded language notes
+4. Results are cached for 30 minutes — consistent across all pages
+5. If Reddit is unreachable, the app falls back to a built-in seed corpus automatically
 
-#### Where input and output live
+## Risk Tiers
 
-| | Location |
-|---|----------|
-| **Input (hardcoded Reddit-shaped posts)** | `lib/seed-posts.ts` — edit this to change what gets analyzed. |
-| **Output (risk score, tier, summary, rationale, coded-language notes)** | **Not saved as files.** Produced at runtime in `lib/risk-engine.ts`, merged with seeds in `lib/post-service.ts`, cached in memory ~30 minutes (use refresh to rerun). |
-
-`seed-posts.ts` includes **`redditScore`** (and comment counts): those mimic **Reddit’s** post metrics, not your FP model. The **0–10 risk score** is always `post.analysis.score` after enrichment.
-
-
-#### How analysis runs (“trigger execution”)
-
-1. Start the app: `npm run dev` (or `npm run start` after `npm run build`).
-2. Open any page (`/`, `/analytics`, `/intelligence`, `/command`) or call the API — the **first request** after cache expiry kicks off analysis (with Gemini: **one API call per seed post**, batched five at a time, so the first load can take a while).
-3. **Force a full re-analysis** now: open or `curl`  
-   `http://localhost:3000/api/corpus?refresh=1`  
-   (add `&granularity=week` etc. as needed).
+| Tier | Score | Meaning |
+|---|---|---|
+| Low | 0–3 | Benign community chatter |
+| Moderate | 4–5 | Worth monitoring |
+| Elevated | 6–7 | Actionable indicator — analyst review needed |
+| Critical | 8–10 | Targeting or coordination signal — command notification |
