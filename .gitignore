@@ -1,0 +1,10 @@
+node_modules
+.next
+out
+# Secrets — never commit API keys (git does not add ignored files)
+.env
+.env.*
+!.env.example
+*.log
+.DS_Store
+tsconfig.tsbuildinfo
