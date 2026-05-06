@@ -30,11 +30,11 @@ export default function AnalyticsPage() {
   const [err, setErr] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
-  const load = useCallback(async () => {
+  const load = useCallback(async (refresh = false) => {
     setLoading(true);
     setErr(null);
     try {
-      const payload = await fetchCorpus(granularity, false);
+      const payload = await fetchCorpus(granularity, refresh);
       setData(payload);
     } catch (e) {
       setErr(e instanceof Error ? e.message : "Load failed");
@@ -51,12 +51,12 @@ export default function AnalyticsPage() {
     <div className="mx-auto max-w-6xl space-y-8">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <h2 className="font-display text-3xl font-bold uppercase tracking-tight text-white">
+          <h2 className="font-display text-3xl font-bold uppercase tracking-tight text-tactical-black">
             Operations board
           </h2>
-          <p className="mt-1 max-w-xl font-mono text-sm text-tactical-muted">
-            Volume, subreddit attribution, and spike heuristics across the demo
-            corpus. Granularity reshapes bucket boundaries for the time series.
+          <p className="mt-1 max-w-xl text-base leading-snug text-slate-800">
+            Volume, subreddit mix, and spike heuristic on the demo corpus. Buttons
+            change how time buckets are drawn.
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
@@ -76,7 +76,7 @@ export default function AnalyticsPage() {
           ))}
           <button
             type="button"
-            onClick={() => void load()}
+            onClick={() => void load(true)}
             className="rounded border border-dashed border-tactical-border px-3 py-1.5 font-mono text-xs uppercase tracking-wider text-tactical-muted hover:border-tactical-accent hover:text-tactical-accent"
           >
             Refresh
@@ -89,7 +89,7 @@ export default function AnalyticsPage() {
           <span className="font-semibold uppercase tracking-wide">
             Volume anomaly
           </span>
-          <p className="mt-1 text-red-200/90">
+          <p className="mt-1 text-sm text-red-900/90">
             Last bucket exceeds recent mean (z &gt; 1.5). Correlate with live
             events, NOTAMs, and leadership travel — heuristic only.
           </p>
@@ -97,7 +97,7 @@ export default function AnalyticsPage() {
       )}
 
       {err && (
-        <div className="rounded border border-tactical-red bg-tactical-red/10 px-4 py-3 font-mono text-sm text-red-200">
+        <div className="rounded border border-red-300 bg-red-50 px-4 py-3 text-sm text-red-900">
           {err}
         </div>
       )}
@@ -151,21 +151,22 @@ export default function AnalyticsPage() {
                         <stop offset="100%" stopColor="#3d8b9e" stopOpacity={0} />
                       </linearGradient>
                     </defs>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#2a3238" />
+                    <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
                     <XAxis
                       dataKey="label"
-                      tick={{ fill: "#7d8a92", fontSize: 10 }}
-                      axisLine={{ stroke: "#2a3238" }}
+                      tick={{ fill: "#475569", fontSize: 10 }}
+                      axisLine={{ stroke: "#cbd5e1" }}
                     />
                     <YAxis
-                      tick={{ fill: "#7d8a92", fontSize: 10 }}
-                      axisLine={{ stroke: "#2a3238" }}
+                      tick={{ fill: "#475569", fontSize: 10 }}
+                      axisLine={{ stroke: "#cbd5e1" }}
                     />
                     <Tooltip
                       contentStyle={{
-                        background: "#111618",
-                        border: "1px solid #2a3238",
-                        fontFamily: "var(--font-share-tech)",
+                        background: "#ffffff",
+                        border: "1px solid #cbd5e1",
+                        borderRadius: 8,
+                        color: "#0f172a",
                         fontSize: 12,
                       }}
                     />
@@ -188,27 +189,26 @@ export default function AnalyticsPage() {
               <div className="mt-4 h-72 w-full">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={data.series}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#2a3238" />
+                    <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
                     <XAxis
                       dataKey="label"
-                      tick={{ fill: "#7d8a92", fontSize: 10 }}
-                      axisLine={{ stroke: "#2a3238" }}
+                      tick={{ fill: "#475569", fontSize: 10 }}
+                      axisLine={{ stroke: "#cbd5e1" }}
                     />
                     <YAxis
-                      tick={{ fill: "#7d8a92", fontSize: 10 }}
-                      axisLine={{ stroke: "#2a3238" }}
+                      tick={{ fill: "#475569", fontSize: 10 }}
+                      axisLine={{ stroke: "#cbd5e1" }}
                     />
                     <Tooltip
                       contentStyle={{
-                        background: "#111618",
-                        border: "1px solid #2a3238",
-                        fontFamily: "var(--font-share-tech)",
+                        background: "#ffffff",
+                        border: "1px solid #cbd5e1",
+                        borderRadius: 8,
+                        color: "#0f172a",
                         fontSize: 12,
                       }}
                     />
-                    <Legend
-                      wrapperStyle={{ fontFamily: "var(--font-share-tech)", fontSize: 11 }}
-                    />
+                    <Legend wrapperStyle={{ fontSize: 11 }} />
                     <Bar dataKey="elevated" stackId="a" fill="#e8a838" name="Elevated" />
                     <Bar dataKey="critical" stackId="a" fill="#c42b2b" name="Critical" />
                   </BarChart>
@@ -222,11 +222,11 @@ export default function AnalyticsPage() {
               <h3 className="font-mono text-xs uppercase tracking-widest text-tactical-muted">
                 Subreddit mix
               </h3>
-              <ul className="mt-4 max-h-64 space-y-2 overflow-auto font-mono text-sm">
+              <ul className="mt-4 max-h-64 space-y-2 overflow-auto text-sm">
                 {data.subreddits.map((s) => (
                   <li key={s.name} className="flex justify-between gap-2 text-tactical-muted">
                     <span className="text-tactical-cyan">r/{s.name}</span>
-                    <span className="text-white">{s.count}</span>
+                    <span className="font-semibold text-tactical-black">{s.count}</span>
                   </li>
                 ))}
               </ul>
@@ -235,10 +235,10 @@ export default function AnalyticsPage() {
               <h3 className="font-mono text-xs uppercase tracking-widest text-tactical-muted">
                 Most active handles (volume)
               </h3>
-              <ul className="mt-4 max-h-64 space-y-2 overflow-auto font-mono text-sm">
+              <ul className="mt-4 max-h-64 space-y-2 overflow-auto text-sm">
                 {data.topAuthors.map((a) => (
                   <li key={a.author} className="flex justify-between gap-2 text-tactical-muted">
-                    <span className="text-white">u/{a.author}</span>
+                    <span className="font-semibold text-tactical-black">u/{a.author}</span>
                     <span>{a.count}</span>
                   </li>
                 ))}
@@ -271,7 +271,7 @@ function Metric({
       <p className="font-mono text-[10px] uppercase tracking-widest text-tactical-muted">
         {label}
       </p>
-      <p className={`mt-1 font-display text-2xl font-semibold ${accent ?? "text-white"}`}>
+      <p className={`mt-1 font-display text-2xl font-semibold ${accent ?? "text-tactical-black"}`}>
         {value}
       </p>
       <p className="mt-1 font-mono text-[10px] text-tactical-muted">{hint}</p>

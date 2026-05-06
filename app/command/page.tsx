@@ -46,10 +46,10 @@ export default function CommandPage() {
         <p className="font-mono text-[10px] uppercase tracking-[0.35em] text-tactical-red">
           Command eyes only · time-constrained
         </p>
-        <h2 className="mt-2 font-display text-3xl font-bold uppercase tracking-tight text-white">
+        <h2 className="mt-2 font-display text-3xl font-bold uppercase tracking-tight text-tactical-black">
           Garrison summary
         </h2>
-        <p className="mt-2 font-mono text-sm leading-relaxed text-tactical-muted">
+        <p className="mt-2 text-base leading-snug text-slate-800">
           Curated high-risk signals from open-source Reddit discussion relevant
           to the installation AOI. Benign and routine threads are removed.
           Critical items warrant immediate staff sync; elevated items merit
@@ -58,7 +58,7 @@ export default function CommandPage() {
       </header>
 
       {err && (
-        <div className="rounded border border-tactical-red/60 bg-tactical-red/10 px-4 py-3 font-mono text-sm text-red-200">
+        <div className="rounded border border-red-300 bg-red-50 px-4 py-3 text-sm text-red-900">
           {err}
         </div>
       )}
@@ -106,40 +106,42 @@ export default function CommandPage() {
                     · r/{p.subreddit}
                   </span>
                 </div>
-                <h3 className="mt-3 font-display text-lg text-white">{p.title}</h3>
-                <div className="mt-3 rounded border border-tactical-border/80 bg-black/35">
-                  <p className="border-b border-tactical-border/60 px-3 py-1.5 font-mono text-[10px] uppercase tracking-widest text-tactical-muted">
+                <h3 className="mt-3 font-display text-lg font-semibold text-tactical-black">
+                  {p.title}
+                </h3>
+                <div className="mt-3 rounded border border-tactical-border bg-tactical-surface">
+                  <p className="border-b border-tactical-border px-3 py-1.5 font-mono text-[10px] font-semibold uppercase tracking-widest text-slate-600">
                     Thread body (source text)
                   </p>
                   <div className="max-h-56 overflow-y-auto px-3 py-2">
-                    <p className="whitespace-pre-wrap text-sm leading-relaxed text-tactical-muted">
+                    <p className="whitespace-pre-wrap text-sm leading-relaxed text-slate-800">
                       {p.body.trim() || "— (no body in seed)"}
                     </p>
                   </div>
                 </div>
-                <div className="mt-4 space-y-3 border-l-2 border-tactical-accent/40 pl-4">
+                <div className="mt-4 space-y-3 border-l-2 border-tactical-accent/50 pl-4">
                   <div>
-                    <p className="font-mono text-[10px] uppercase tracking-widest text-tactical-muted">
+                    <p className="font-mono text-[10px] font-semibold uppercase tracking-widest text-slate-600">
                       Executive summary
                     </p>
-                    <p className="mt-1 text-sm leading-relaxed text-white">
+                    <p className="mt-1 text-sm font-medium leading-snug text-tactical-black">
                       {p.analysis.summary}
                     </p>
                   </div>
                   <div>
-                    <p className="font-mono text-[10px] uppercase tracking-widest text-tactical-red">
+                    <p className="font-mono text-[10px] font-semibold uppercase tracking-widest text-tactical-red">
                       Why this threatens force protection
                     </p>
-                    <p className="mt-1 text-sm leading-relaxed text-tactical-muted">
+                    <p className="mt-1 text-sm leading-snug text-slate-800">
                       {p.analysis.threatRationale}
                     </p>
                   </div>
                   {p.analysis.codedLanguageNotes && (
                     <div>
-                      <p className="font-mono text-[10px] uppercase tracking-widest text-tactical-amber">
+                      <p className="font-mono text-[10px] font-semibold uppercase tracking-widest text-amber-800">
                         Context / possible coded language
                       </p>
-                      <p className="mt-1 text-sm text-tactical-amber/90">
+                      <p className="mt-1 text-sm leading-snug text-amber-950">
                         {p.analysis.codedLanguageNotes}
                       </p>
                     </div>

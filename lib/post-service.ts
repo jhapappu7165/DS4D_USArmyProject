@@ -1,4 +1,5 @@
 import { SEED_POSTS } from "./seed-posts";
+import { fetchFortHoodPosts } from "./reddit-fetcher";
 import { analyzeAll, isGeminiEnabled } from "./risk-engine";
 import type { EnrichedPost, RedditPostInput } from "./types";
 
@@ -9,10 +10,21 @@ let cached: {
   builtAt: number;
   engine: CacheEngine;
 } | null = null;
-const TTL_MS = 1000 * 60 * 30; // refresh analysis every 30 min in dev
+const TTL_MS = 1000 * 60 * 30; // 30-min TTL — Reddit fetch + re-analysis
 
 function currentEngine(): CacheEngine {
   return isGeminiEnabled() ? "gemini" : "heuristic";
+}
+
+async function loadRawPosts(): Promise<RedditPostInput[]> {
+  try {
+    const posts = await fetchFortHoodPosts();
+    console.log(`[reddit] fetched ${posts.length} live posts`);
+    return posts;
+  } catch (err) {
+    console.warn("[reddit] fetch failed — falling back to seed corpus:", err);
+    return SEED_POSTS;
+  }
 }
 
 export async function getEnrichedCorpus(
@@ -29,8 +41,9 @@ export async function getEnrichedCorpus(
     return cached.posts;
   }
 
-  const analysisById = await analyzeAll(SEED_POSTS);
-  const posts: EnrichedPost[] = SEED_POSTS.map((p) => ({
+  const rawPosts = await loadRawPosts();
+  const analysisById = await analyzeAll(rawPosts);
+  const posts: EnrichedPost[] = rawPosts.map((p) => ({
     ...p,
     analysis: analysisById.get(p.id)!,
   }));
@@ -42,7 +55,6 @@ export async function getEnrichedCorpus(
   return posts;
 }
 
-/** Future: swap SEED_POSTS for Reddit ingest */
 export function getRawSeeds(): RedditPostInput[] {
   return [...SEED_POSTS];
 }

@@ -9,15 +9,16 @@ export default {
     extend: {
       colors: {
         tactical: {
-          black: "#0a0c0d",
-          panel: "#111618",
-          border: "#2a3238",
-          muted: "#7d8a92",
-          accent: "#c4a35a",
-          amber: "#e8a838",
-          red: "#c42b2b",
-          green: "#4a9d6f",
-          cyan: "#3d8b9e",
+          black: "#0f172a",
+          panel: "#ffffff",
+          surface: "#f1f5f9",
+          border: "#cbd5e1",
+          muted: "#475569",
+          accent: "#a67c2d",
+          amber: "#b45309",
+          red: "#b91c1c",
+          green: "#15803d",
+          cyan: "#0e7490",
         },
       },
       fontFamily: {

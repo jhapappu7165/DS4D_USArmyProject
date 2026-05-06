@@ -10,7 +10,7 @@ const nav = [
 export function AppShell({ children }: { children: React.ReactNode }) {
   return (
     <div className="relative z-10 flex min-h-screen">
-      <aside className="hidden w-64 shrink-0 border-r border-tactical-border bg-tactical-panel/95 px-4 py-6 lg:block">
+      <aside className="hidden w-64 shrink-0 border-r border-tactical-border bg-slate-50 px-4 py-6 lg:block">
         <div className="mb-8 px-2">
           <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-tactical-muted">
             DS4D // Army-615
@@ -27,7 +27,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             <Link
               key={item.href}
               href={item.href}
-              className="group block rounded-md border border-transparent px-3 py-3 transition hover:border-tactical-border hover:bg-white/5"
+              className="group block rounded-md border border-transparent px-3 py-3 transition hover:border-tactical-border hover:bg-white"
             >
               <span className="font-display text-sm font-semibold uppercase tracking-wide text-tactical-cyan group-hover:text-tactical-accent">
                 {item.label}
@@ -46,7 +46,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       </aside>
 
       <div className="flex min-w-0 flex-1 flex-col">
-        <header className="sticky top-0 z-20 border-b border-tactical-border bg-tactical-black/90 backdrop-blur-md lg:hidden">
+        <header className="sticky top-0 z-20 border-b border-tactical-border bg-white/95 backdrop-blur-md lg:hidden">
           <div className="flex flex-wrap gap-2 px-3 py-3">
             {nav.map((item) => (
               <Link

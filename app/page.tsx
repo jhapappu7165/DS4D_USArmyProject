@@ -16,16 +16,14 @@ export default async function BriefPage() {
         <p className="font-mono text-xs uppercase tracking-[0.3em] text-tactical-muted">
           Army-615 · Designing Solutions for Defense
         </p>
-        <h2 className="font-display text-4xl font-bold uppercase tracking-tight text-white sm:text-5xl">
+        <h2 className="font-display text-4xl font-bold uppercase tracking-tight text-tactical-black sm:text-5xl">
           Open-Source Threat Pattern{" "}
           <span className="text-tactical-accent">Detection</span>
         </h2>
-        <p className="max-w-2xl text-lg leading-relaxed text-tactical-muted">
-          This workstation ingests public Reddit discourse tied to the U.S. Army
-          and the Fort Cavazos / Killeen area of interest (AOI). Analysts review
-          volume trends, thread-level content, and contextual risk scoring —
-          including euphemistic / coded language — before leadership sees only
-          what requires action.
+        <p className="max-w-2xl text-lg font-medium leading-relaxed text-slate-800">
+          Demo workstation: public Reddit threads for the Fort Cavazos / Killeen
+          AOI, scored for force-protection risk (including coded language). Volume,
+          intel records, and a short commander view — nothing extra on screen.
         </p>
         <div className="flex flex-wrap gap-3 pt-2">
           <Link
@@ -36,7 +34,7 @@ export default async function BriefPage() {
           </Link>
           <Link
             href="/command"
-            className="rounded border border-tactical-border px-4 py-2 font-display text-sm uppercase tracking-wide text-tactical-muted transition hover:border-tactical-red hover:text-red-300"
+            className="rounded border border-tactical-border px-4 py-2 font-display text-sm uppercase tracking-wide text-tactical-muted transition hover:border-tactical-red hover:text-red-700"
           >
             Garrison commander view
           </Link>
@@ -48,22 +46,21 @@ export default async function BriefPage() {
           <h3 className="font-mono text-xs uppercase tracking-widest text-tactical-muted">
             Corpus snapshot
           </h3>
-          <p className="mt-2 font-display text-3xl font-semibold text-white">
+          <p className="mt-2 font-display text-3xl font-semibold text-tactical-black">
             {posts.length}{" "}
             <span className="text-base font-normal text-tactical-muted">
               tracked threads (seed)
             </span>
           </p>
-          <p className="mt-2 font-mono text-xs text-tactical-muted">
-            Replace seed file with Reddit API pull when credentials are
-            authorized.
+          <p className="mt-2 text-sm text-tactical-muted">
+            Swap seed for a live API pull when authorized.
           </p>
         </div>
         <div className="panel p-5">
           <h3 className="font-mono text-xs uppercase tracking-widest text-tactical-muted">
             Tier distribution
           </h3>
-          <ul className="mt-3 space-y-2 font-mono text-sm">
+          <ul className="mt-3 space-y-2 text-sm">
             {(
               [
                 ["critical", tiers.critical],
@@ -72,11 +69,13 @@ export default async function BriefPage() {
                 ["low", tiers.low],
               ] as const
             ).map(([k, n]) => (
-              <li key={k} className="flex justify-between gap-4 border-b border-white/5 pb-2">
-                <span className="uppercase tracking-wider text-tactical-muted">
+              <li key={k} className="flex justify-between gap-4 border-b border-slate-200 pb-2">
+                <span className="font-medium uppercase tracking-wider text-tactical-muted">
                   {k}
                 </span>
-                <span className="text-white">{n}</span>
+                <span className="font-display text-lg font-semibold text-tactical-black">
+                  {n}
+                </span>
               </li>
             ))}
           </ul>
@@ -87,25 +86,20 @@ export default async function BriefPage() {
         <h3 className="font-display text-lg font-semibold uppercase tracking-wide text-tactical-cyan">
           Mission alignment
         </h3>
-        <ul className="mt-4 list-inside list-disc space-y-2 text-tactical-muted">
+        <ul className="mt-4 list-inside list-disc space-y-3 text-base leading-snug text-slate-800">
+          <li>Flags volume spikes that can track with events or hostile chatter.</li>
           <li>
-            Surfaces spikes in discussion volume that may precede
-            high-visibility events or targeting chatter.
+            Keeps provenance per thread: subreddit, user, time, body, model, and
+            score rationale.
           </li>
           <li>
-            Preserves thread provenance: subreddit, handle, timestamp, body,
-            and model rationale for each risk call.
+            Risk text from Gemini when{" "}
+            <code className="rounded bg-slate-100 px-1 font-mono text-sm text-tactical-accent">
+              GEMINI_API_KEY
+            </code>{" "}
+            is set; otherwise a contextual heuristic (not raw keyword matching).
           </li>
-          <li>
-            Uses LLM assessment (Google Gemini when{" "}
-            <code className="font-mono text-tactical-accent">GEMINI_API_KEY</code>{" "}
-            is set) with a contextual fallback that treats clusters of benign
-            words as suspicious when the operational framing fits.
-          </li>
-          <li>
-            Command view strips noise: only elevated / critical items with
-            executive summary and &ldquo;why it matters.&rdquo;
-          </li>
+          <li>Command view: only elevated / critical rows, plain-language blurbs.</li>
         </ul>
       </section>
 
@@ -123,8 +117,10 @@ export default async function BriefPage() {
                     r/{p.subreddit} · u/{p.author}
                   </span>
                 </div>
-                <p className="mt-2 font-display text-white">{p.title}</p>
-                <p className="mt-1 line-clamp-2 font-mono text-xs text-tactical-muted">
+                <p className="mt-2 font-display text-lg font-semibold text-tactical-black">
+                  {p.title}
+                </p>
+                <p className="mt-1 line-clamp-2 text-sm leading-snug text-slate-700">
                   {p.analysis.summary}
                 </p>
               </div>

@@ -19,8 +19,9 @@ CRITICAL: Do NOT rely only on obvious violent keywords. Consider:
 - Correlation value across posts (VIP movement inference, unit rotations, comms testing)
 - Whether content is likely benign community discussion vs. materially useful to a threat actor
 
+BREVITY (for executive dashboards): write so an audience can read each field in under 5 seconds on screen.
 Return ONLY valid JSON with keys:
-{"score": <number 0-10>, "summary": "<2 sentences>", "threat_rationale": "<why this matters for FP, or why it is low risk>", "coded_language_notes": "<none, or specific interpretation of possible coded language>"}
+{"score": <number 0-10>, "summary": "<ONE short sentence, max ~20 words: what this post is and headline risk>", "threat_rationale": "<ONE short sentence, max ~25 words: why the score — FP impact or why benign>", "coded_language_notes": "<one short phrase, or exactly the word \"None.\" if not applicable>"}
 
 Scoring guide:
 0-3 benign or general interest
@@ -96,17 +97,17 @@ function contextualHeuristic(post: RedditPostInput): RiskAnalysis {
 
   const summary =
     score >= 8
-      ? "High-priority signal: content may support targeting or illicit coordination (incl. possible coded language)."
+      ? "High-risk signal — possible targeting or coordination cues."
       : score >= 6
-        ? "Elevated OSINT value: installation-related detail or aggregation risk warrants analyst review."
+        ? "Elevated — installation detail or aggregation angle needs analyst review."
         : score >= 4
-          ? "Moderate chatter: some operational nuggets or community noise; monitor for clustering."
-          : "Likely benign community or routine interest discussion with limited FP impact.";
+          ? "Moderate noise — watch for clustering with other threads."
+          : "Likely benign — limited force-protection relevance.";
 
   const threatRationale =
     cues.length > 0
-      ? cues.slice(0, 3).join(" ")
-      : "No strong force-protection indicators in heuristic pass; correlate with other sources.";
+      ? cues[0]!
+      : "Heuristic pass: no strong FP indicators; correlate with other feeds.";
 
   return {
     score,
@@ -166,9 +167,9 @@ async function geminiAnalyzeRequired(post: RedditPostInput): Promise<RiskAnalysi
   return {
     score,
     tier: tierFromScore(score),
-    summary: String(parsed.summary ?? "").slice(0, 800),
-    threatRationale: String(parsed.threat_rationale ?? "").slice(0, 1200),
-    codedLanguageNotes: String(parsed.coded_language_notes ?? "").slice(0, 800),
+    summary: String(parsed.summary ?? "").slice(0, 320),
+    threatRationale: String(parsed.threat_rationale ?? "").slice(0, 400),
+    codedLanguageNotes: String(parsed.coded_language_notes ?? "").slice(0, 280),
     model: "gemini",
   };
 }

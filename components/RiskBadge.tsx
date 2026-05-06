@@ -2,11 +2,13 @@ import type { RiskTier } from "@/lib/types";
 import { tierLabel } from "@/lib/types";
 
 const tierStyles: Record<RiskTier, string> = {
-  low: "border-tactical-border bg-white/5 text-tactical-muted",
-  moderate: "border-tactical-cyan/40 bg-tactical-cyan/10 text-tactical-cyan",
-  elevated: "border-tactical-amber/50 bg-tactical-amber/15 text-tactical-amber",
+  low: "border-slate-300 bg-slate-100 text-slate-700",
+  moderate:
+    "border-cyan-700/40 bg-cyan-50 text-cyan-900",
+  elevated:
+    "border-amber-700/45 bg-amber-50 text-amber-900",
   critical:
-    "border-tactical-red/70 bg-tactical-red/20 text-red-300 shadow-[0_0_20px_rgba(196,43,43,0.25)]",
+    "border-red-700 bg-red-100 text-red-900 font-semibold",
 };
 
 export function RiskBadge({
@@ -32,9 +34,11 @@ export function RiskBadge({
 
 export function CriticalBanner({ children }: { children: React.ReactNode }) {
   return (
-    <div className="flex items-start gap-3 rounded-lg border-2 border-tactical-red bg-tactical-red/15 px-4 py-3 font-mono text-sm text-red-100">
-      <span className="shrink-0 animate-pulse text-tactical-red">▌</span>
-      <div>{children}</div>
+    <div className="flex items-start gap-3 rounded-lg border-2 border-red-700 bg-red-50 px-4 py-3 text-sm font-medium text-red-950 shadow-sm">
+      <span className="shrink-0 self-center animate-pulse font-mono text-lg leading-none text-red-600">
+        ▌
+      </span>
+      <div className="min-w-0 leading-snug">{children}</div>
     </div>
   );
 }

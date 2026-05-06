@@ -3,32 +3,32 @@
 @tailwind utilities;
 
 :root {
-  --bg-deep: #060809;
-  --panel: #0e1114;
-  --border: #2a3238;
-  --text: #e7ecef;
-  --muted: #8a969e;
+  --bg-deep: #ffffff;
+  --panel: #f3f4f5;
+  --border: #d1d5db;
+  --text: #0f1416;
+  --muted: #475569;
   --accent: #c4a35a;
   --amber: #e8a838;
   --danger: #c42b2b;
   --ok: #4a9d6f;
-  --scan-line: rgba(196, 163, 90, 0.06);
+  --scan-line: rgba(15, 20, 22, 0.04);
 }
 
 html {
-  color-scheme: dark;
+  color-scheme: light;
 }
 
 body {
-  @apply bg-tactical-black text-[var(--text)] antialiased;
+  @apply text-[var(--text)] antialiased;
   background-color: var(--bg-deep);
   background-image: linear-gradient(
       180deg,
-      rgba(196, 163, 90, 0.04) 0%,
-      transparent 35%
+      rgba(196, 163, 90, 0.07) 0%,
+      transparent 38%
     ),
-    radial-gradient(ellipse at 20% 0%, rgba(61, 139, 158, 0.08), transparent 50%),
-    radial-gradient(ellipse at 80% 100%, rgba(196, 43, 43, 0.06), transparent 45%);
+    radial-gradient(ellipse at 20% 0%, rgba(61, 139, 158, 0.07), transparent 52%),
+    radial-gradient(ellipse at 80% 100%, rgba(196, 43, 43, 0.05), transparent 48%);
   min-height: 100vh;
 }
 
@@ -45,15 +45,17 @@ body::before {
     var(--scan-line) 2px,
     var(--scan-line) 3px
   );
-  opacity: 0.35;
+  opacity: 0.06;
   z-index: 9999;
-  mix-blend-mode: overlay;
+  mix-blend-mode: multiply;
 }
 
 @layer utilities {
   .panel {
-    @apply rounded-lg border border-tactical-border bg-tactical-panel/80 backdrop-blur-sm;
-    box-shadow: 0 0 0 1px rgba(196, 163, 90, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+    @apply rounded-lg border border-tactical-border bg-tactical-panel shadow-sm;
+    box-shadow:
+      0 1px 2px rgba(15, 23, 42, 0.06),
+      0 0 0 1px rgba(15, 23, 42, 0.04);
   }
   .glow-amber {
     text-shadow: 0 0 24px rgba(232, 168, 56, 0.35);

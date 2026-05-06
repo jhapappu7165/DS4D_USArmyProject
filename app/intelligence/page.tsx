@@ -17,10 +17,10 @@ export default function IntelligencePage() {
   const [sort, setSort] = useState<SortKey>("date");
   const [expanded, setExpanded] = useState<string | null>(null);
 
-  const load = useCallback(async () => {
+  const load = useCallback(async (refresh = false) => {
     setErr(null);
     try {
-      const payload = await fetchCorpus("day", false);
+      const payload = await fetchCorpus("day", refresh);
       setData(payload);
     } catch (e) {
       setErr(e instanceof Error ? e.message : "Load failed");
@@ -67,17 +67,17 @@ export default function IntelligencePage() {
     <div className="mx-auto max-w-6xl space-y-6">
       <header className="flex flex-col gap-4 border-b border-tactical-border pb-6 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <h2 className="font-display text-3xl font-bold uppercase tracking-tight text-white">
+          <h2 className="font-display text-3xl font-bold uppercase tracking-tight text-tactical-black">
             Intelligence records
           </h2>
-          <p className="mt-1 max-w-2xl font-mono text-sm text-tactical-muted">
-            Full thread view for analysts. Expand a row for body text, model path
+          <p className="mt-1 max-w-2xl text-base leading-snug text-slate-800">
+            Full thread list for analysts. Expand a row for body, model
             (Gemini vs heuristic), and coded-language notes.
           </p>
         </div>
         <button
           type="button"
-          onClick={() => void load()}
+          onClick={() => void load(true)}
           className="self-start rounded border border-tactical-border px-3 py-2 font-mono text-xs uppercase tracking-wider text-tactical-muted hover:border-tactical-accent hover:text-tactical-accent"
         >
           Reload corpus
@@ -89,25 +89,25 @@ export default function IntelligencePage() {
           <span className="font-semibold">
             {criticalOpen} critical thread(s) in current filter.
           </span>
-          <p className="mt-1 text-xs text-red-200/80">
-            Escalate per unit SOP. This UI is unclassified demo data.
+          <p className="mt-1 text-xs font-normal text-red-900/85">
+            Escalate per unit SOP. Unclassified demo data only.
           </p>
         </CriticalBanner>
       )}
 
       {err && (
-        <div className="rounded border border-tactical-red/60 bg-tactical-red/10 px-4 py-3 font-mono text-sm text-red-200">
+        <div className="rounded border border-red-300 bg-red-50 px-4 py-3 text-sm text-red-900">
           {err}
         </div>
       )}
 
-      <div className="flex flex-col gap-3 rounded-lg border border-tactical-border bg-tactical-panel/50 p-4 lg:flex-row lg:flex-wrap lg:items-center">
+      <div className="flex flex-col gap-3 rounded-lg border border-tactical-border bg-tactical-surface p-4 lg:flex-row lg:flex-wrap lg:items-center">
         <label className="flex items-center gap-2 font-mono text-xs text-tactical-muted">
           Tier
           <select
             value={tierFilter}
             onChange={(e) => setTierFilter(e.target.value as RiskTier | "all")}
-            className="rounded border border-tactical-border bg-tactical-black px-2 py-1 text-tactical-cyan"
+            className="rounded border border-tactical-border bg-white px-2 py-1.5 text-sm text-tactical-black"
           >
             <option value="all">All</option>
             {tiers.map((t) => (
@@ -123,7 +123,7 @@ export default function IntelligencePage() {
             value={subFilter}
             onChange={(e) => setSubFilter(e.target.value)}
             placeholder="subreddit, user, title…"
-            className="w-full rounded border border-tactical-border bg-tactical-black px-2 py-1 text-sm text-white placeholder:text-tactical-muted"
+            className="w-full rounded border border-tactical-border bg-white px-2 py-1.5 text-sm text-tactical-black placeholder:text-slate-400"
           />
         </label>
         <label className="flex items-center gap-2 font-mono text-xs text-tactical-muted">
@@ -131,7 +131,7 @@ export default function IntelligencePage() {
           <select
             value={sort}
             onChange={(e) => setSort(e.target.value as SortKey)}
-            className="rounded border border-tactical-border bg-tactical-black px-2 py-1 text-tactical-cyan"
+            className="rounded border border-tactical-border bg-white px-2 py-1.5 text-sm text-tactical-black"
           >
             <option value="date">Newest</option>
             <option value="score">Risk score</option>
@@ -180,7 +180,7 @@ function ThreadRow({
       <button
         type="button"
         onClick={onToggle}
-        className="flex w-full flex-col gap-2 p-4 text-left transition hover:bg-white/[0.02] sm:flex-row sm:items-center sm:justify-between"
+        className="flex w-full flex-col gap-2 p-4 text-left transition hover:bg-slate-50 sm:flex-row sm:items-center sm:justify-between"
       >
         <div className="min-w-0 flex-1 space-y-1">
           <div className="flex flex-wrap items-center gap-2">
@@ -192,7 +192,9 @@ function ThreadRow({
               })}
             </span>
           </div>
-          <p className="font-display text-base font-medium text-white">{p.title}</p>
+          <p className="font-display text-base font-semibold text-tactical-black">
+            {p.title}
+          </p>
           <p className="font-mono text-[11px] text-tactical-muted">
             r/{p.subreddit} · u/{p.author} · Reddit ↑ {p.redditScore} ·{" "}
             {p.numComments} comments
@@ -203,34 +205,34 @@ function ThreadRow({
         </span>
       </button>
       {open && (
-        <div className="space-y-3 border-t border-tactical-border bg-black/30 px-4 py-4 font-mono text-sm">
+        <div className="space-y-3 border-t border-tactical-border bg-tactical-surface px-4 py-4 text-sm leading-relaxed">
           <div>
-            <p className="text-[10px] uppercase tracking-widest text-tactical-muted">
+            <p className="font-mono text-[10px] font-semibold uppercase tracking-widest text-slate-600">
               Body
             </p>
-            <p className="mt-1 whitespace-pre-wrap text-tactical-muted">{p.body}</p>
+            <p className="mt-1 whitespace-pre-wrap text-slate-800">{p.body}</p>
           </div>
           <div className="grid gap-3 sm:grid-cols-2">
             <div>
-              <p className="text-[10px] uppercase tracking-widest text-tactical-muted">
+              <p className="font-mono text-[10px] font-semibold uppercase tracking-widest text-slate-600">
                 Summary
               </p>
-              <p className="mt-1 text-white">{p.analysis.summary}</p>
+              <p className="mt-1 font-medium text-tactical-black">{p.analysis.summary}</p>
             </div>
             <div>
-              <p className="text-[10px] uppercase tracking-widest text-tactical-muted">
+              <p className="font-mono text-[10px] font-semibold uppercase tracking-widest text-slate-600">
                 Threat rationale
               </p>
-              <p className="mt-1 text-tactical-muted">{p.analysis.threatRationale}</p>
+              <p className="mt-1 text-slate-800">{p.analysis.threatRationale}</p>
             </div>
           </div>
           <div>
-            <p className="text-[10px] uppercase tracking-widest text-tactical-amber">
+            <p className="font-mono text-[10px] font-semibold uppercase tracking-widest text-amber-800">
               Coded language / context
             </p>
-            <p className="mt-1 text-tactical-amber/90">{p.analysis.codedLanguageNotes}</p>
+            <p className="mt-1 text-amber-950">{p.analysis.codedLanguageNotes}</p>
           </div>
-          <div className="flex flex-wrap gap-3 text-[11px] text-tactical-muted">
+          <div className="flex flex-wrap gap-3 font-mono text-[11px] text-tactical-muted">
             <span>
               Model:{" "}
               <span className="text-tactical-cyan">{p.analysis.model}</span>
